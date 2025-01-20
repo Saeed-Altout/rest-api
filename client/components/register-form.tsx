@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Zap } from "lucide-react";
+import { Loader2, Zap } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,9 +18,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { useRegisterMutation } from "@/services/auth/register";
 
 const formSchema = z.object({
-  name: z.string().min(6),
+  name: z.string().min(1),
   email: z.string().email(),
   password: z.string().min(6),
 });
@@ -29,6 +30,7 @@ export function RegisterForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const { mutate: register, isPending } = useRegisterMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,7 +41,7 @@ export function RegisterForm({
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    register(values);
   };
 
   return (
@@ -68,7 +70,12 @@ export function RegisterForm({
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="name" {...field} />
+                  <Input
+                    disabled={isPending}
+                    type="text"
+                    placeholder="name"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -81,7 +88,12 @@ export function RegisterForm({
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="email" {...field} />
+                  <Input
+                    disabled={isPending}
+                    type="email"
+                    placeholder="email"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -94,14 +106,26 @@ export function RegisterForm({
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="password" {...field} />
+                  <Input
+                    disabled={isPending}
+                    type="password"
+                    placeholder="password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full bg-indigo-700">
-            Sign up
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="w-full bg-indigo-700"
+          >
+            Sign up{" "}
+            {isPending && (
+              <Loader2 className="animate-spin h-5 w-5 text-white" />
+            )}
           </Button>
         </form>
       </Form>
