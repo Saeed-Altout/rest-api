@@ -11,11 +11,17 @@ import router from "./router";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Replace with your Next.js frontend URL
+    credentials: true, // Allow credentials (cookies)
+  })
+);
 
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
+app.use(express.json());
 
 const server = http.createServer(app);
 server.listen(8080, () => {

@@ -88,6 +88,13 @@ export const verifyEmail = async (req: express.Request, res: any) => {
 
     await verifyUser(email, token);
 
+    res.cookie("NEXT_CWS_AT", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     return res.status(200).json({
       status: "success",
       code: "200",
@@ -99,7 +106,14 @@ export const verifyEmail = async (req: express.Request, res: any) => {
         token,
       },
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: "error",
+      code: "500",
+      message: "Internal server error",
+    });
+  }
 };
 
 export const login = async (req: express.Request, res: any) => {

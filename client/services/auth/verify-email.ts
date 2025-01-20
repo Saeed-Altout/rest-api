@@ -3,7 +3,9 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 export const verifyEmail = (data: IVerifyEmailCredentials) => {
-  return _axios.post("/auth/verify-email", data);
+  return _axios.post("/auth/verify-email", data, {
+    withCredentials: true,
+  });
 };
 
 export const useVerifyEmailMutation = () => {
