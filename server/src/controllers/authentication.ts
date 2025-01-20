@@ -95,16 +95,26 @@ export const verifyEmail = async (req: express.Request, res: any) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.status(200).json({
-      status: "success",
-      code: "200",
-      message: "Email verified successfully",
-      data: {
+    res.cookie(
+      "NEXT_CWS_SU",
+      JSON.stringify({
         name: user.name,
         email: user.email,
         image: user.image,
         token,
-      },
+      }),
+      {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      }
+    );
+
+    return res.status(200).json({
+      status: "success",
+      code: "200",
+      message: "Email verified successfully",
     });
   } catch (error) {
     console.error(error);
