@@ -19,3 +19,21 @@ export const getUserById = (id: string) => {
     },
   });
 };
+
+export const generateOtp = () => {
+  const otp = Math.floor(100000 + Math.random() * 900000);
+  return otp.toString();
+};
+
+export const verifyUser = (email: string, token: string) => {
+  return db.user.update({
+    where: {
+      email,
+    },
+    data: {
+      emailVerified: new Date(),
+      token,
+      otp: null,
+    },
+  });
+};

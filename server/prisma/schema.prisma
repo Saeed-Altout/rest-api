@@ -14,8 +14,18 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  name     String
-  password String
+  id            String    @id @default(cuid())
+  name          String?
+  username      String?   @unique
+  password      String?
+  email         String?   @unique
+  emailVerified DateTime?
+  salt          String?
+  otp           String?
+  token         String?   @db.Text
+  image         String?
+  expires_at    Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

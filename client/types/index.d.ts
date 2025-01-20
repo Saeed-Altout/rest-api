@@ -9,6 +9,10 @@ declare type ApiError = {
   message: string;
 };
 
+declare type IVerifyEmailCredentials = {
+  email: string;
+  otp: string;
+};
 declare type ILoginCredentials = {
   email: string;
   password: string;

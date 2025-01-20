@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Zap } from "lucide-react";
+import { Loader2, Zap } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { useLoginMutation } from "@/services/auth/login";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -28,6 +29,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const { mutate: login, isPending } = useLoginMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,7 +39,7 @@ export function LoginForm({
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    login(values);
   };
 
   return (
@@ -66,7 +68,12 @@ export function LoginForm({
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="email" {...field} />
+                  <Input
+                    disabled={isPending}
+                    type="email"
+                    placeholder="email"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -79,14 +86,26 @@ export function LoginForm({
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="password" {...field} />
+                  <Input
+                    disabled={isPending}
+                    type="password"
+                    placeholder="password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full bg-indigo-700">
-            Login
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="w-full bg-indigo-700"
+          >
+            Login{" "}
+            {isPending && (
+              <Loader2 className="animate-spin text-white h-5 w-5" />
+            )}
           </Button>
         </form>
       </Form>

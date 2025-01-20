@@ -1,5 +1,6 @@
 import { _axios } from "@/services";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export const register = async (data: IRegisterCredentials) => {
   try {
@@ -11,8 +12,13 @@ export const register = async (data: IRegisterCredentials) => {
 };
 
 export const useRegisterMutation = () => {
+  const router = useRouter();
+
   return useMutation({
     mutationKey: ["register"],
     mutationFn: register,
+    onSuccess: () => {
+      router.push("/auth/verify-email");
+    },
   });
 };
